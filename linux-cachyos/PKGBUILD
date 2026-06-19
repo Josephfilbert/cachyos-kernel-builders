@@ -119,7 +119,7 @@
 # Builds the open nvidia module and package it into a own base
 # This does replace the requirement of nvidia-open-dkms
 # Use this only if you have Turing+ GPU
-: "${_build_nvidia_open:=no}"
+: "${_build_nvidia_open:=yes}"
 
 # Builds the r8125 module and package it into its own package
 # Replaces requirement for r8125-dkms
@@ -168,9 +168,9 @@ _is_ci_build() {
 if _is_lto_kernel && [ "$_use_lto_suffix" = "yes"  ]; then
     _pkgsuffix=cachyos-lto
 elif ! _is_lto_kernel && [ "$_use_gcc_suffix" = "yes" ]; then
-    _pkgsuffix=cachyos-gcc
+    _pkgsuffix=cachyos-customasusppt-gcc
 else
-    _pkgsuffix=cachyos
+    _pkgsuffix=cachyos-customasusppt
 fi
 
 pkgbase="linux-$_pkgsuffix"
@@ -211,13 +211,14 @@ makedepends=(
   zstd
 )
 
-_patchsource="https://raw.githubusercontent.com/cachyos/kernel-patches/master/${_major}"
+_patchsource="https://raw.githubusercontent.com/josephfilbert/cachyos-kernel-patches/fx608jpr-ppt/${_major}"
 _nv_ver=610.43.02
 _nv_pkg="NVIDIA-Linux-x86_64-${_nv_ver}"
 _nv_open_pkg="NVIDIA-kernel-module-source-${_nv_ver}"
 source=(
     "https://github.com/CachyOS/linux/releases/download/${_srcname}/${_srcname}.tar.gz"{,.asc}
     "config"
+    "${_patchsource}/asus-armoury.patch"
 )
 validpgpkeys=(
   E18447AC260021D31F3FF6C4C8A2A4774B8B63C4  # Eric Naim <dnaim@cachyos.org>
